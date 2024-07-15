@@ -4,7 +4,7 @@ format: gfm
 
 ---
 
-This repository contains code to extract the data released by the official website of the Portuguese Instituto da Mobilidade e dos Transportes (Institute of Mobility and Transport). The quaterly reports contain the Montlhy Average Daily Traffic for several corridor of the highway network of Portugal (see [this](https://www.imt-ip.pt/sites/IMTT/Portugues/InfraestruturasRodoviarias/RedeRodoviaria/Paginas/Relatorios.aspx)).
+This repository contains code to extract the data released by the official website of the Portuguese Instituto da Mobilidade e dos Transportes (Institute of Mobility and Transport). The quarterly reports contain the Montlhy Average Daily Traffic for several corridor of the highway network of Portugal (see [this](https://www.imt-ip.pt/sites/IMTT/Portugues/InfraestruturasRodoviarias/RedeRodoviaria/Paginas/Relatorios.aspx)).
 
 
 ## Loading the data
@@ -35,12 +35,17 @@ dir.create("00_raw_data",showWarnings = F)
 Downloading the files
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+#| error: false
+
 lapply(xls_links,function(tfile){
   u <- basename(URLdecode(tfile))
   if(!file.exists(file.path("00_raw_data",u))){
     download.file(url = URLencode(URLdecode(tfile)),
                   destfile = file.path("00_raw_data",u),
-                  mode = "wb" # This is for Windows to avoid corrupt files
+                  mode = "wb" # This is for Windows to avoid corrupted files
                   )
   }
 
@@ -50,6 +55,11 @@ rm(list = ls())
 
 Reading all files
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+#| error: false
+
 local_files <- list.files("00_raw_data/",pattern = "\\.xls",full.names = T)
 
 library(readxl)
@@ -60,6 +70,11 @@ rawdata <- lapply(local_files,read_xls)
 Processing all the tables
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+#| error: false
+
 all_data <- do.call(bind_rows,
         lapply(rawdata,function(mydata){
           names0 <- names(mydata)
